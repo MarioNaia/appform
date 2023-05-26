@@ -10,19 +10,20 @@ const App = () => {
 
 
   return (
-    <div className="register-container">
+    <div>
+    
       {!isRegisterOn && (
-        <div>
+        <div className="register-container">
           <FormPage />
-        </div>
+          </div>
       )}
 
       {isRegisterOn &&
 
-        <div>
+<div className="register-container">
           <FormPage />
           <UserListPage />
-        </div>
+          </div>
       }
 
 
