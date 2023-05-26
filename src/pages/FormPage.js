@@ -3,7 +3,8 @@ import { Form, Row, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import FileDropzone from '../components/FileDropzone';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {register, motto} from '../constants/strings';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { updateForm } from '../actions/actions';
 
 const FormPage = () => {
 
@@ -20,6 +21,8 @@ const FormPage = () => {
         </Tooltip>
     );
 
+    const dispatch = useDispatch();
+    const isRegisterOn = useSelector((state) => state.isRegisterOn);
 
     const [selectedMonth, setSelectedMonth] = useState('');
     const [selectedYear, setSelectedYear] = useState('');
@@ -61,7 +64,8 @@ const FormPage = () => {
         console.log(selectedYear);
         console.log(selectedMonth);
         console.log(selectedGender);
-        resetData()
+        resetData();
+        dispatch(updateForm('Form updated'));
     }
 
     const renderDayOptions = () => {
