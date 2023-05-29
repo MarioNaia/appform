@@ -1,62 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { Card, ListGroup, ListGroupItem, Badge } from 'react-bootstrap';
-import users from '../data/users';
+import React, { useEffect } from 'react';
+import { Card, Row, Col, Container } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UserListPage = () => {
-  // Sample user data
-  const [userslist, setUsers] = useState('');
 
+  let userslist = useSelector((state) => state.users);
+  let toggle = useSelector((state) => state.toggle);
 
   useEffect(() => {
     // When it starts
-    const fetchData = async () => {
-      try {
-        const response = await fetch('https://api.example.com/data');
-        const data = await response.json();
-        setUsers(users);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-
-  }, []);
+  }, [toggle,userslist]);
 
   return (
     <div className="listusers-container">
-
       <div className="text-center mb-4">
         <h2 className="form-title">List of users</h2>
       </div>
 
-      {users.map((user) => (
-        <div className="card flex-row flex-wrap mb-3 justify-content-center border-0" key={user.id} >
-          <Card className="card flex-row flex-wrap mb-3 border-0" style={{ border: 'none' }}>
-            <Card.Img variant="center" src={user.photo} className="circle-photo border-0" />
-            <Badge pill className={`status-indicator ${user.status}`}></Badge>
-            <div
-              className={`status-indicator ${user.status}`}
-              title={user.status}
-            ></div>
-          </Card>
-          <Card className="card flex-row flex-wrap mb-3 border-0">
-            <Card.Body >
-              <Card.Title>{user.name}</Card.Title>
-              <ListGroup className="list-group-flush" >
-                <ListGroupItem>
-                  Gender: <strong>{user.gender}</strong>
-                </ListGroupItem>
-                <ListGroupItem>
-                  Birth Date: <strong>{user.birthDate}</strong>
-                </ListGroupItem>
-              </ListGroup>
+      <Card style={{ width: '80%', margin: '0 auto', border: 'none',backgroundColor: "#fdfcfc" }} >
+        {userslist.formData.map((user) => (
+          <Card style={{ width: '70%', margin: '0 auto', border: 'none' ,backgroundColor: '#fdfcfc'}}  >
+            <Card.Body style={{ display: 'flex', alignItems: 'center' }}>
+              <div className="profile-image-container">
+                <img src={user.photo} alt="Profile" className="profile-image" />
+
+                <div
+                  className={`status-indicator ${user.status}`}
+                  title={user.status}
+                ></div>
+              </div>
+              <Container>
+                <Row className="justify-content-center align-items-center">
+                  <Col>
+                    <strong>{user.name}</strong>
+                  </Col>
+                </Row>
+                <Row className="justify-content-center align-items-center">
+                  <Col>
+                    <strong>{user.gender}</strong>
+                  </Col>
+                  <Col>
+                    <strong>{user.birthDate}</strong>
+                  </Col>
+                </Row>
+              </Container>
             </Card.Body>
           </Card>
-        </div>
-      ))}
+        ))}
+      </Card>
     </div>
+
 
   );
 };

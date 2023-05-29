@@ -3,31 +3,20 @@ import './App.css';
 import UserListPage from './pages/UserListPage';
 import FormPage from './pages/FormPage';
 import { useSelector } from 'react-redux';
+import React from 'react';
 
 const App = () => {
 
-  const isRegisterOn = useSelector(state => state.isRegisterOn);
+
+  const toggle = useSelector((state) => state.toggle);
 
 
   return (
-    <div>
-    
-      {!isRegisterOn && (
-        <div className="register-container">
-          <FormPage />
-          </div>
-      )}
-
-      {isRegisterOn &&
-
-<div className="register-container">
-          <FormPage />
-          <UserListPage />
-          </div>
+    <div className="register-container">
+      <FormPage />
+      {toggle.toggle &&
+        <UserListPage />
       }
-
-
-
     </div>
 
   );

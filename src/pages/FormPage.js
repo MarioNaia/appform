@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Form, Row, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import FileDropzone from '../components/FileDropzone';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {register, motto} from '../constants/strings';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateForm } from '../actions/actions';
+import { register, motto, selectedPhoto } from '../constants/strings';
+import { useDispatch} from 'react-redux';
+import { toggle } from '../redux/actions/toggleActions';
+import { addUser } from '../redux/actions/userActions';
+
 
 const FormPage = () => {
-
-
 
     const infoTooltipDOB = (
         <Tooltip id="info-tooltip">
@@ -22,25 +22,35 @@ const FormPage = () => {
     );
 
     const dispatch = useDispatch();
-    const isRegisterOn = useSelector((state) => state.isRegisterOn);
+
 
     const [selectedMonth, setSelectedMonth] = useState('');
     const [selectedYear, setSelectedYear] = useState('');
     const [daysInMonth, setDaysInMonth] = useState(31);
     const [selectedGender, setSelectedGender] = useState('');
     const [selectedDay, setSelectedDay] = useState('');
+    const [selectedName, setName] = useState('');
+
+
 
     const [form, setForm] = useState({
         first_name: '',
         last_name: '',
         email_mobile: '',
+        status: '',
+        photo: '',
+        gender: '',
     });
+
 
     const resetData = () => {
         setForm({
             first_name: '',
             last_name: '',
             email_mobile: '',
+            status: '',
+            photo: '',
+            gender: '',
         });
         setSelectedDay("");
         setSelectedMonth("");
@@ -48,66 +58,85 @@ const FormPage = () => {
         setSelectedGender("");
     }
 
-    
-    const handleDayChange = (event) => {
-        setSelectedDay(event.target.value);
-      };
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    }
+
 
     const submitButton = (e) => {
         e.preventDefault();
-        console.log(form);
-        console.log(selectedDay);
-        console.log(selectedYear);
-        console.log(selectedMonth);
-        console.log(selectedGender);
+
+        let gender = "";
+
+        if (selectedGender === false)
+            gender = "male"
+        else
+            gender = "female"
+        const newUser = {
+            name: selectedName,
+            photo: selectedPhoto,
+            status: 'online',
+            gender: gender,
+            birthDate: selectedYear + '-' + selectedMonth + '-' + selectedDay,
+        };
+        dispatch(addUser(newUser));
+        dispatch(toggle());
+
         resetData();
-        dispatch(updateForm('Form updated'));
+
     }
+
+
+
+    const handleDayChange = (event) => {
+        setSelectedDay(event.target.value);
+    };
+
+    const handleChange = (e) => {
+        setName(e.target.value);
+        setForm({ ...form, [e.target.name]: e.target.value });
+    }
+
+
 
     const renderDayOptions = () => {
         const options = [];
         for (let day = 1; day <= daysInMonth; day++) {
-          options.push(<option value={day} key={day}>{day}</option>);
+            options.push(<option value={day} key={day}>{day}</option>);
         }
         return options;
-      };
-    
-      const handleMonthChange = (event) => {
+    };
+
+    const handleMonthChange = (event) => {
         setSelectedMonth(event.target.value);
         updateDaysInMonth(event.target.value, selectedYear);
-      };
-    
-      const handleYearChange = (event) => {
+    };
+
+    const handleYearChange = (event) => {
         setSelectedYear(event.target.value);
         updateDaysInMonth(selectedMonth, event.target.value);
-      };
-    
-      const handleGenderMale = (event) => {
-        setSelectedGender(false);
-      };
+    };
 
-      const handleGenderFemale = (event) => {
+    const handleGenderMale = (event) => {
+        setSelectedGender(false);
+    };
+
+    const handleGenderFemale = (event) => {
         setSelectedGender(true);
-      };
+    };
 
     const updateDaysInMonth = (month, year) => {
         const selectedDate = new Date(year, month - 1, 1);
         const lastDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0).getDate();
         setDaysInMonth(lastDayOfMonth);
-      };
+    };
 
-      const renderYearOptions = () => {
+    const renderYearOptions = () => {
         const currentYear = new Date().getFullYear();
         const options = [];
         for (let year = currentYear; year >= 1900; year--) {
-          options.push(<option value={year} key={year}>{year}</option>);
+            options.push(<option value={year} key={year}>{year}</option>);
         }
         return options;
-      };
+    };
 
     return (
         <form className="form-container">
@@ -141,7 +170,7 @@ const FormPage = () => {
                             <span className="ml-1 text-primary">&#9432;</span>
                         </OverlayTrigger>
                     </Form.Label>
-                    
+
                     <div className="d-flex">
                         <Form.Control as="select" className="mr-2" value={selectedMonth} onChange={handleMonthChange}>
                             <option value="">Mois</option>
@@ -162,7 +191,7 @@ const FormPage = () => {
                             <option value="">Année</option>
                             {renderYearOptions()}
                         </Form.Control>
-                        <Form.Control as="select"  value={selectedDay} onChange={handleDayChange}>
+                        <Form.Control as="select" value={selectedDay} onChange={handleDayChange}>
                             <option value="">Jour</option>
                             {renderDayOptions()}
                         </Form.Control>
@@ -171,7 +200,7 @@ const FormPage = () => {
 
 
 
-                
+
                 <Form>
                     <Form.Group className="col mt-3 form-label label-left">
                         <Form.Label className="form-label label-left">

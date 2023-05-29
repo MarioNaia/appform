@@ -1,5 +1,5 @@
 
-  export default  [
+export let users = [
     {
       id: 1,
       name: 'Bill Gates',
